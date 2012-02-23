@@ -15,3 +15,14 @@ profile-header
         span.given-name
         span.family-name
     p.title
+    dl#headline .demographic-info adr
+      dt "Location"
+      dd.locality
+      dt "Industry"
+      dd.industry
+    h2.section-title
+    dl#overview
+      dt.summary-current "Current"
+      dd.summary-current
+        ul.current
+          li

@@ -2,7 +2,7 @@
   :description "clojurescript solution to the issues posed by linked in
                http://engineering.linkedin.com/frontend/client-side-templating-throwdown-mustache-handlebars-dustjs-and-more"
   :dependencies [[org.clojure/clojure "1.3.0"]
-                 [org.clojure/clojurescript "0.0-971"] ; what is latest version?
+                 [org.clojure/clojurescript "0.0-971"]
                  [ring "1.0.2"]
                  [net.cgrand/moustache "1.1.0"] ; minimal routing
                  [ring-reload-modified "0.1.1"] ; reload modified clj files
@@ -14,9 +14,7 @@
   :plugins [[lein-cljsbuild "0.0.14"]]          ; build clojure script files
   :cljsbuild {:source-path "src/cljs"
               :compiler
-                  {:output-dir "public/javascripts/out"
-                   :output-to "public/javascripts/maind.js"
+                  {:output-to "public/javascripts/maind.js"
                    :optimizations :simple
                    :pretty-print true}}
-  :source-path "src/clj"
-  :extra-classpath-dirs ["src/cljs"])
+  :source-path "src/clj")
