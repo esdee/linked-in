@@ -1,0 +1,17 @@
+div#body
+  div.wrapper
+    div#main .profile grid-a
+      div#content .resume hresume
+        div.profile-header
+        div#profile-summary .section
+        div#profile-skills .section
+        div#profile-experience .section
+
+profile-header
+  div#profile-picture .image
+    img.photo
+    h1
+      span#name .n fn
+        span.given-name
+        span.family-name
+    p.title
