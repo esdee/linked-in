@@ -3,8 +3,9 @@
 /lib
 /classes
 /native
-/.lein-failures
 /.lein-deps-sum
+/.lein-failures
+/.lein-git-deps
 /.lein-plugins
 *.swp
 *.swo

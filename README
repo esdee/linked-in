@@ -11,3 +11,9 @@ FIXME: write
 Copyright (C) 2012 FIXME
 
 Distributed under the Eclipse Public License, the same as Clojure.
+
+# install
+lein deps
+lein cljsbuild once
+lein git-deps
+lein repl
