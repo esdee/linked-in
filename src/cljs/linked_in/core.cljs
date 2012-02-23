@@ -1,6 +1,5 @@
 (ns linked-in.core
-  (:require [goog.uri.utils :as uri]
-            [clojure.browser.repl :as repl]
+  (:require [clojure.browser.repl :as repl]
             [cljs.reader :as reader]
             ;[one.browser.remote :as remote]
             ;[single-page.view :as view]
