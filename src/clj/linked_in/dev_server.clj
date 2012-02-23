@@ -34,17 +34,21 @@
   (let [profile (parse-string (slurp "data/profile.json") true)]
     (response (profiles/single-profile profile))))
 
-(defn- profile-client
-  [_ id]
-  (let [profile (parse-string (slurp "data/profile.json") true)]
-    (response (pr-str profile))))
 )
+
+
+(defn profile-client
+  [_ _] ; we don't use the request or id for the example
+  (-> (slurp "data/profile.json")
+    (parse-string true)
+    pr-str
+    response))
 
 (def app-routes
   (app
     :get [
       [""] (delegate page)
-     ;["profiles" "client" id] (delegate profile-client id)
+      ["profiles" "client" id] (delegate profile-client id)
      ;["profiles" id] (delegate profile id)
     ]))
 
@@ -52,7 +56,7 @@
               (wrap-file "public")
               wrap-file-info
               wrap-stacktrace
-              (wrap-reload-modified ["src/clj/"])))
+              (wrap-reload-modified ["src/clj"])))
 
 (defn run-server
   "Start the development server on port 8080"

@@ -1,7 +1,7 @@
 (ns linked-in.core
   (:require [clojure.browser.repl :as repl]
             [cljs.reader :as reader]
-            ;[one.browser.remote :as remote]
+            [one.browser.remote :as remote]
             ;[single-page.view :as view]
 ))
 
