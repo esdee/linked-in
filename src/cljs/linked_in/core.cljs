@@ -1,23 +1,30 @@
 (ns linked-in.core
+  (:use [crate.core :only (html)]
+        [domina :only (swap-content!)]
+        [domina.xpath :only (xpath)])
   (:require [clojure.browser.repl :as repl]
             [cljs.reader :as reader]
-            [one.browser.remote :as remote]
-            ;[single-page.view :as view]
-))
+            [one.browser.remote :as remote])
+  (:require-macros [linked-in.app.view-macros.profile :as profile]))
 
-(comment
- (defn ^:export start
+
+(def content-node (xpath "//div[@class='content']"))
+
+(defn show-profile
+  [profile]
+  (->> profile
+    profile/template
+    html
+    (swap-content! content-node)))
+
+(defn ^:export start
   []
   (remote/request
     100
     "profiles/client/100"
-    :on-success #(-> % :body reader/read-string view/single-profile)))
-)
-
+    :on-success #(->> % :body reader/read-string show-profile)
+    :on-error #(js/alert "Error")))
 
 (defn ^:export repl
-  "Connects to a ClojureScript REPL running on localhost port 9000.
-  browser for evaluation. This function should be called from a script
-  in the development host HTML page."
   []
   (repl/connect "http://localhost:9000/repl"))

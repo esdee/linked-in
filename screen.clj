@@ -26,12 +26,32 @@ lein repl
 
 (start)
 
-@profile
-
 (:lastName @profile)
+
+(def content-node (xpath "//div[@class='content']"))
+
+(defn names
+  [profile]
+  )
+(defn profile-template
+  [profile]
+  [:div.content
+    [:div.names (str (:firstName profile) " "
+                     (:lastName profile))]
+   ])
+
+(swap-content! content-node
+               (html (profile-template @profile)))
+
 
 (load "linked_in/dev_server")
 
 (require '[linked-in.dev-server :as ds])
 
 (ds/profile-client nil nil)
+
+(load "linked_in/app/view_macros/profile")
+
+(require '[linked-in.app.view-macros.profile :as profile])
+
+(profile/template {:lastName "Dass" :firstName "Shashy"})

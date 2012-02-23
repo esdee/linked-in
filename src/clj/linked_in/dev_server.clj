@@ -10,13 +10,13 @@
         [hiccup.core :only (html)]
         [hiccup.page-helpers :only (include-css include-js javascript-tag link-to)]
         [cheshire.core :only (parse-string)])
-  ;(:require [single-page.views.profiles :as profiles])
-  )
+  (:require [linked-in.app.view-macros.profile :as profile :reload true]))
 
 (defn- page
   [_]
   (let [js-files [ "javascripts/maind.js"]
-        js-scripts   ["linked_in.core.repl();"];  (get-in config [:js @*mode*])
+        js-scripts   ["linked_in.core.start();
+                      linked_in.core.repl();"]
         page-data (html
          [:head
           [:title "Single Page"]
@@ -28,29 +28,23 @@
           (map javascript-tag js-scripts)])]
     (response page-data)))
 
-(comment
-(defn- profile
-  [_ id]
-  (let [profile (parse-string (slurp "data/profile.json") true)]
-    (response (profiles/single-profile profile))))
+(def profile-data (-> (slurp "data/profile.json") (parse-string true)))
 
-)
+(defn- profile
+  [_ _] ; we don't use the request or id for the example
+  (-> profile-data profile/template html response))
 
 
 (defn profile-client
   [_ _] ; we don't use the request or id for the example
-  (-> (slurp "data/profile.json")
-    (parse-string true)
-    pr-str
-    response))
+  (-> profile-data pr-str response))
 
 (def app-routes
   (app
     :get [
       [""] (delegate page)
       ["profiles" "client" id] (delegate profile-client id)
-     ;["profiles" id] (delegate profile id)
-    ]))
+      ["profiles" id] (delegate profile id)]))
 
 (def my-app (-> app-routes
               (wrap-file "public")
