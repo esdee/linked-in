@@ -4,8 +4,10 @@
 /classes
 /native
 /.lein-failures
-/checkouts
 /.lein-deps-sum
+/.lein-plugins
 *.swp
 *.swo
 public/javascripts
+/checkouts
+
