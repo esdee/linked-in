@@ -21,19 +21,26 @@
 (defn overview
   [profile]
   (let [positions (-> profile :positions :values)
-        educations (-> profile :educations :values)
         pos-details (fn [p] [:li (:title p) [:span.at " at "]
-                             (-> p :company :name)])]
+                             (-> p :company :name)])
+        site-details (fn [w] [:li [:a {:href (:url w) :target "_blank"}
+                                      (:name w)]])]
     [:dl#overview
      [:dt.summary-current {:style "display:block"} "Current"]
      [:dd.summary-current {:style "display:block"}
       [:ul.current (pos-details (first positions))]]
      [:dt.summary-past {:style "display:block"} "Past"]
      [:dd.summary-past {:style "display:block"}
-     [:ul.past (map pos-details (take 3 (rest positions)))]]
+      [:ul.past (map pos-details (take 3 (rest positions)))]]
      [:dt.summary-education {:style "display:block"} "Education"]
      [:dd.summary-education {:style "display:block"}
-      [:ul (map (fn [e] [:li (:schoolName e)]) educations)]]]))
+      [:ul (map (fn [e] [:li (:schoolName e)]) (-> profile :educations :values))]]
+     [:dt "Connections"]
+     [:dd.overview-connections
+      [:p [:strong (-> profile :connections :_total)] " connections"]]
+     [:dt.websites "Websites"]
+     [:dd.websites
+      [:ul (map site-details (-> profile :memberUrlResources :values))]]]))
 
 (defn profile-header
   [profile]
@@ -57,17 +64,67 @@
 (defn profile-summary
   [profile]
   [:div (block-section :profile-summary)
-   "Profile Summary"])
+   [:div.header [:h2 (str (full-name profile) "'s Summary")]]
+   [:div.content
+    [:p (:summary profile)]
+    [:div#profile-specialities {:style "display:block"}
+    [:h3 "Specialties"]
+    [:p.null (:specialties profile)]]]])
+
+
+(defn proficiency
+  [skill]
+  (let [proficiency (:proficiency skill)]
+    (str "(" (:proficiency proficiency)
+         ", " (:years proficiency) " years experience)")))
 
 (defn profile-skills
   [profile]
   [:div (block-section :profile-skills)
-   "Profile Skills"])
+   [:div.header [:h2 (str (full-name profile) "'s Skills")]]
+   [:div.content
+    [:ul {:class "skills competencies"}
+      (map (fn [sk]
+             [:li {:class "skills competencies"}
+              [:h3 [:a {:href "#"} (-> sk :skill :name)]]
+              [:span.proficiency (proficiency sk)]])
+           (-> profile :skills :values))]]])
+
+(defn organization-details
+  [position]
+  (let [company (:company position)]
+    [:p {:class "orgstats organization-details"}
+     (str (:type company) "; " (:industry company) " Industry")]))
+
+(defn period
+  [position]
+  (let [months ["January" "February" "March" "April" "May" "June"
+                "July" "August" "September" "October" "November" "December"]
+        format-date #(str (->> % :month dec months) " " (:year %))]
+    [:p.period
+     [:abbr.dtstart (format-date (:startDate position))] " - "
+     (if (:isCurrent position) " Present" (format-date (:endDate position)))]))
+
+(defn position-detail
+  [position]
+  [:div {:class "position first experience vevent vcard current-position"
+         :style "display:block"}
+   [:a.include {:href "#name"}]
+   [:div.postitle
+    [:h3 {:class "postitle anet"} [:span.title (:title position)]]
+    [:h4 [:strong [:a.company-profile-public {:href "#"}
+                    [:span {:class "org summary"}
+                      (-> position :company :name)]]]]]
+   (organization-details position)
+   (period position)
+   [:p.desc (:summary position)]])
 
 (defn profile-experience
   [profile]
   [:div (block-section :profile-experience)
-   "Profile Experience"])
+   [:div.header [:h2 (str (full-name profile) "'s Experience")]]
+   [:div {:class "content vcalendar"}
+    (map position-detail (-> profile :positions :values))]])
 
 (defn template
   [profile]
@@ -84,13 +141,13 @@
     html
     (swap-content! content-node)))
 
-(defn start
+(defn ^:export start
   []
   (remote/request
     100
     "profiles/client/100"
     :on-success #(->> % :body reader/read-string show-profile)
-    :on-error #(->> % :body (str "*ERROR* ") js/alert)))
+    :on-error #(->> % :status (str "*ERROR* ") js/alert)))
 
 (defn ^:export repl
   []

@@ -10,6 +10,3 @@ lein repl
 (cljs.repl/repl (cljs.repl.browser/repl-env))
 
 (js/alert "Hello World")
-
-
-
