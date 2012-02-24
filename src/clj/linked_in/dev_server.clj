@@ -15,8 +15,7 @@
 (defn- page
   [_]
   (let [js-files [ "javascripts/maind.js"]
-        js-scripts   ["linked_in.core.start();
-                      linked_in.core.repl();"]
+        js-scripts ["linked_in.core.start(); linked_in.core.repl();"]
         page-data (html
          [:head
           [:title "Single Page"]
@@ -28,16 +27,20 @@
           (map javascript-tag js-scripts)])]
     (response page-data)))
 
-(def profile-data (-> (slurp "data/profile.json") (parse-string true)))
+(defn- get-profile
+  [_]
+  ; just return test data
+  (-> (slurp "data/profile.json") (parse-string true)))
+
 
 (defn- profile
-  [_ _] ; we don't use the request or id for the example
-  (-> profile-data profile/template html response))
+  [_ id]
+  (-> (get-profile id) profile/template html response))
 
 
 (defn profile-client
-  [_ _] ; we don't use the request or id for the example
-  (-> profile-data pr-str response))
+  [_ id]
+  (-> (get-profile id) pr-str response))
 
 (def app-routes
   (app
