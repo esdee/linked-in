@@ -1,19 +1,24 @@
-# linked-in
+## Description
+A clojure + clojurescript consideration of Linked In's client-side javascript throwdown -
+http://engineering.linkedin.com/frontend/client-side-templating-throwdown-mustache-handlebars-dustjs-and-more
 
-FIXME: write description
+This project uses clojurescript or clojure and the same set of templates to generate html
+on the client or server.
 
 ## Usage
 
-FIXME: write
+lein deps
+lein cljsbuild clean
+lein cljsbuild once
+lein repl
+(load "linked-in/dev_server")
+(linked-in.dev-server/run-server)
+
+browse http://localhost:8080
 
 ## License
-
-Copyright (C) 2012 FIXME
-
-Distributed under the Eclipse Public License, the same as Clojure.
-
-# install
-lein deps
-lein cljsbuild once
-lein git-deps
-lein repl
+This project uses a file from Brenton Ashworth's One project
+  https://github.com/brentonashworth/one
+specifically
+  https://github.com/brentonashworth/one/blob/master/src/lib/cljs/one/browser/remote.cljs
+for client server communicating
