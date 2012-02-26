@@ -7,6 +7,7 @@
             [one.browser.remote :as remote])
   (:require-macros [linked-in.app.view-macros.profile :as profile]))
 
+; This is where the profile will be displayed
 (def content-node (xpath "//div[@class='content']"))
 
 (defn show-profile
@@ -16,6 +17,7 @@
     html
     (swap-content! content-node)))
 
+; Retrieve the clojure map from the server and display it
 (defn ^:export start
   []
   (remote/request
@@ -24,6 +26,7 @@
     :on-success #(->> % :body reader/read-string show-profile)
     :on-error #(->> % :status (str "*ERROR* ") js/alert)))
 
+; for Browser based repl
 (defn ^:export repl
   []
   (repl/connect "http://localhost:9000/repl"))

@@ -12,6 +12,20 @@
         [cheshire.core :only (parse-string)])
   (:require [linked-in.app.view-macros.profile :as profile :reload true]))
 
+
+(defn- get-profile
+  [_]
+  ; just return test data
+  (-> (slurp "data/profile.json") (parse-string true)))
+
+(defn- profile
+  [_ id]
+  (-> (get-profile id) profile/template html response))
+
+(defn profile-client
+  [_ id]
+  (-> (get-profile id) pr-str response))
+
 (defn- page
   [_]
   (let [js-files [ "javascripts/maind.js"]
@@ -19,28 +33,12 @@
         page-data (html
          [:head
           [:title "Single Page"]
-          ;(include-css "css/single-page.css")
           [:link {:rel "shortcut icon" :href "img/favicon.ico"}]]
          [:body
           [:div.container [:div.content "Profile Goes Here"]]
           (map include-js js-files)
           (map javascript-tag js-scripts)])]
     (response page-data)))
-
-(defn- get-profile
-  [_]
-  ; just return test data
-  (-> (slurp "data/profile.json") (parse-string true)))
-
-
-(defn- profile
-  [_ id]
-  (-> (get-profile id) profile/template html response))
-
-
-(defn profile-client
-  [_ id]
-  (-> (get-profile id) pr-str response))
 
 (def app-routes
   (app
