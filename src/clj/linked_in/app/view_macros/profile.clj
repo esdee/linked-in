@@ -1,10 +1,6 @@
+; Functions to format profile data for display from either the client or server
 (ns linked-in.app.view-macros.profile
   (:require [clojure.string :as str :only (replace)]))
-
-(defmacro block-section
-  [id]
-  {:id `(name ~id)
-   :class "section" :style "display:block"})
 
 (defmacro full-name
   [profile]
@@ -56,7 +52,7 @@
 
 (defmacro profile-summary
   [profile]
-  `[:div (block-section :profile-summary)
+  `[:div#profile-summary.section {:style "display:block"}
     [:div.header [:h2 (str (full-name ~profile) "'s Summary")]]
     [:div.content
      [:p (:summary ~profile)]
@@ -72,7 +68,7 @@
 
 (defmacro profile-skills
   [profile]
-  `[:div (block-section :profile-skills)
+  `[:div#profile-skills.section {:style "display:block"}
     [:div.header [:h2 (str (full-name ~profile) "'s Skills")]]
     [:div.content
      [:ul {:class "skills competencies"}
@@ -88,6 +84,8 @@
      [:p {:class "orgstats organization-details"}
       (str (:type company#) "; " (:industry company#) " Industry")]))
 
+; A bit of a hacky way to do date formatting, but this way we do not rely on
+; either javascript date functions or java date functions
 (defmacro period
   [position]
   `(let [m# ["January" "February" "March" "April" "May" "June"
@@ -96,6 +94,18 @@
     [:p.period
      [:abbr.dtstart (fd# (:startDate ~position))] " - "
      (if (:isCurrent ~position) " Present" (fd# (:endDate ~position)))]))
+
+; A requirement in the linked-in throwdown was that the \n character in the
+; summary was replaced by a <br /> element. Cannot just do a string replace -
+; this would work on the server side code, but the client side crate/html function
+; uses a javascript creteElementNS which just renders a string "< br />".
+; So we return an array of [{p.desc '(("text" [:br]) ...) instead and both
+; crate/html and hiccup/html do the right thing
+(defmacro split-summary
+  [position]
+  `[:p.desc (map #(list %1 %2)
+                 (str/split (:summary ~position) #"\n")
+                 (repeat [:br]))])
 
 (defmacro position-detail
   [position]
@@ -109,11 +119,11 @@
                        (-> ~position :company :name)]]]]]
     (organization-details ~position)
     (period ~position)
-    [:p.desc (-> ~position :summary (str/replace "*" "<br>"))]])
+    (split-summary ~position)])
 
 (defmacro profile-experience
   [profile]
-  `[:div (block-section :profile-experience)
+  `[:div#profile-experience.section {:stle "display:block"}
     [:div.header [:h2 (str (full-name ~profile) "'s Experience")]]
     [:div {:class "content vcalendar"}
      (map #(position-detail %) (-> ~profile :positions :values))]])
