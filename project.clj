@@ -17,4 +17,5 @@
                   {:output-to "public/javascripts/maind.js"
                    :optimizations :simple
                    :pretty-print true}}
-  :source-path "src/clj")
+  :source-path "src/clj"
+  :repl-init linked-in.dev-server)
