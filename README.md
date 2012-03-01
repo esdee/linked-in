@@ -1,27 +1,28 @@
 ### Linked In throwdown
+[Blog post](http://esdee.github.com/project/2012/03/01/the-linkedin-throwdown/>)
+
 A clojure + clojurescript consideration of Linked In's client-side javascript
 [throwdown](http://engineering.linkedin.com/frontend/client-side-templating-throwdown-mustache-handlebars-dustjs-and-more).
 
 #### Usage
 
-{% highlight bash %}
-git clone git@github.com:esdee/linked-in.git
+    git clone git@github.com:esdee/linked-in.git
 
-cd linked-in
+    cd linked-in
 
-lein deps
+    lein deps
 
-lein cljsbuild clean
+    lein cljsbuild clean
 
-lein cljsbuild once
+    lein cljsbuild once
 
-lein repl
+    lein repl
 
-(run-server)
-{% endhighlight %}
+    (run-server)
 
-http://localhost:8080 (client side templating)
-http://localhost:8080/profiles/100 (server side templating)
+http://localhost:8080               (client side templating)
+
+http://localhost:8080/profiles/100  (server side templating)
 
 #### License
 Do whatever you want with this code.
